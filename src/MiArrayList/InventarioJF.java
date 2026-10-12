@@ -95,7 +95,7 @@ public class InventarioJF extends javax.swing.JFrame {
         txtStock.setForeground(new java.awt.Color(0, 102, 204));
         txtStock.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
-        txaLista.setBackground(new java.awt.Color(0, 51, 102));
+        txaLista.setBackground(new java.awt.Color(14, 71, 128));
         txaLista.setColumns(20);
         txaLista.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
         txaLista.setForeground(new java.awt.Color(255, 255, 255));
