@@ -4,10 +4,13 @@
  */
 package MiArrayList;
 
-/**
- *
- * @author alumnog
+/** 
+ * @author arturo saiza
  */
 public class TestGit {
+    String nombre ="Arturo Saiza";
+    String id = "00000090476";
+    String carrera = "ISW";
+    int edad = 34;
     
 }
