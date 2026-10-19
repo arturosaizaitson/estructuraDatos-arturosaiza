@@ -3,6 +3,7 @@ package MiArrayList;
 
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
  
 public class TicTacJF extends javax.swing.JFrame {
@@ -16,55 +17,72 @@ public class TicTacJF extends javax.swing.JFrame {
         reiniciar();
     }
 
-    public void turno(JButton boton, int pos){
-        ValoresTicTac.set(pos, turno); 
-        boton.setText(turno);   
-        validarGanador();
-        turno = turno.equals("X")? "Y" : "X"; 
-     }
-    
-    public void validarGanador(){
-    
-        if(       ValoresTicTac.get(1).equals(turno) && ValoresTicTac.get(2).equals(turno) && ValoresTicTac.get(3).equals(turno)  ){
-            ganador=turno;
-        }else  if(ValoresTicTac.get(4).equals(turno) && ValoresTicTac.get(5).equals(turno) && ValoresTicTac.get(6).equals(turno)  ){
-            ganador=turno;
-        }else  if(ValoresTicTac.get(7).equals(turno) && ValoresTicTac.get(8).equals(turno) && ValoresTicTac.get(9).equals(turno)  ){
-            ganador=turno;
-        }else  if(ValoresTicTac.get(1).equals(turno) && ValoresTicTac.get(4).equals(turno) && ValoresTicTac.get(7).equals(turno)  ){
-            ganador=turno;
-        }else  if(ValoresTicTac.get(2).equals(turno) && ValoresTicTac.get(5).equals(turno) && ValoresTicTac.get(8).equals(turno)  ){
-            ganador=turno;
-        }else  if(ValoresTicTac.get(3).equals(turno) && ValoresTicTac.get(6).equals(turno) && ValoresTicTac.get(9).equals(turno)  ){
-            ganador=turno;
-        }else  if(ValoresTicTac.get(1).equals(turno) && ValoresTicTac.get(5).equals(turno) && ValoresTicTac.get(9).equals(turno)  ){
-            ganador=turno;
-        }else  if(ValoresTicTac.get(3).equals(turno) && ValoresTicTac.get(5).equals(turno) && ValoresTicTac.get(9).equals(turno)  ){
-            ganador=turno;
-        }else{
-            
-            ValoresTicTac.forEach((valor) -> {
-                System.out.println(valor);
-            });
-            
-        } 
-    
+    public void turno(JButton boton, int pos) {
+            // Si la casilla ya fue jugada o la partida ya terminó, no hacer nada
+            if (!ValoresTicTac.get(pos).equals("") || !ganador.equals("")) {
+                return;
+            }
+
+            // Registrar la jugada
+            ValoresTicTac.set(pos, turno); 
+            boton.setText(turno);   
+
+            // Verificar el estado del juego
+            validarGanador();
+
+            // Cambiar el turno solo si el juego sigue activo
+            if (ganador.equals("")) {
+                turno = turno.equals("X") ? "O" : "X"; 
+            }
     }
     
-    public void reiniciar(){
+     public void validarGanador() {
+        boolean hayGanador = false;
+
+        // 1. Revisar las 8 combinaciones ganadoras
+        if (
+            // Filas
+            esCombinacion(1, 2, 3) || esCombinacion(4, 5, 6) || esCombinacion(7, 8, 9) ||
+            // Columnas
+            esCombinacion(1, 4, 7) || esCombinacion(2, 5, 8) || esCombinacion(3, 6, 9) ||
+            // Diagonales (Corregido: 3, 5, 7)
+            esCombinacion(1, 5, 9) || esCombinacion(3, 5, 7)
+        ) {
+            ganador = turno;
+            hayGanador = true;
+            lblGAnador.setText("¡El ganador es " + ganador + "!");
+        }
+
+        // 2. Revisar empate (si nadie ganó y no quedan casillas vacías)
+        if (!hayGanador && esEmpate()) {
+            lblGAnador.setText("¡Es un empate!");
+        }
+    }
+    
+  // Método auxiliar para simplificar la lectura de combinaciones ganadoras
+    private boolean esCombinacion(int a, int b, int c) {
+        return ValoresTicTac.get(a).equals(turno) && 
+               ValoresTicTac.get(b).equals(turno) && 
+               ValoresTicTac.get(c).equals(turno);
+    }
+
+    // Método auxiliar para verificar si el tablero está lleno
+    private boolean esEmpate() {
+        for (int i = 1; i <= 9; i++) {
+            if (ValoresTicTac.get(i).equals("")) {
+                return false; // Aún hay al menos una casilla libre
+            }
+        }
+        return true; // No quedan casillas libres
+    }
+
+    public void reiniciar() {
         ValoresTicTac = new ArrayList<>();  
-        ValoresTicTac.add("");        
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");     
-        ValoresTicTac.add("");
+        for (int i = 0; i <= 9; i++) {
+            ValoresTicTac.add("");
+        }
         turno = "X";
-        ganador ="";
+        ganador = "";
     }
     
     
@@ -75,7 +93,7 @@ public class TicTacJF extends javax.swing.JFrame {
 
         jLayeredPane1 = new javax.swing.JLayeredPane();
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lblGAnador = new javax.swing.JLabel();
         btn9 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         btn2 = new javax.swing.JButton();
@@ -104,11 +122,10 @@ public class TicTacJF extends javax.swing.JFrame {
         jPanel1.setBackground(new java.awt.Color(0, 153, 255));
         jPanel1.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setFont(new java.awt.Font("Wicked Mouse", 0, 29)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("EMPATE");
-        jPanel1.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, 230, 50));
+        lblGAnador.setFont(new java.awt.Font("Wicked Mouse", 0, 18)); // NOI18N
+        lblGAnador.setForeground(new java.awt.Color(255, 255, 255));
+        lblGAnador.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jPanel1.add(lblGAnador, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 330, 230, 50));
 
         btn9.setFont(new java.awt.Font("Wicked Mouse", 1, 36)); // NOI18N
         btn9.setForeground(new java.awt.Color(0, 102, 204));
@@ -123,6 +140,11 @@ public class TicTacJF extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Wicked Mouse", 1, 14)); // NOI18N
         jButton2.setForeground(new java.awt.Color(51, 255, 255));
         jButton2.setText("R E I N I C i A R");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         jPanel1.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 390, 230, 40));
 
         btn2.setFont(new java.awt.Font("Wicked Mouse", 1, 36)); // NOI18N
@@ -252,6 +274,10 @@ public class TicTacJF extends javax.swing.JFrame {
         turno((JButton) evt.getSource(),9);  
     }//GEN-LAST:event_btn9ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    reiniciar();        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -298,9 +324,9 @@ public class TicTacJF extends javax.swing.JFrame {
     private javax.swing.JButton btn8;
     private javax.swing.JButton btn9;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLayeredPane jLayeredPane1;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblGAnador;
     // End of variables declaration//GEN-END:variables
 }
